@@ -1,10 +1,11 @@
 name: Build Android APK
+
 on:
   push:
     branches: [master] # Trigger on pushes to the master branch (adjust as needed)
 
 jobs:
-  build:
+  build_android_apk:
     runs-on: ubuntu-latest # Replace with a compatible runner if needed
     steps:
       - uses: actions/checkout@v3 # Checkout code from repository
@@ -30,23 +31,22 @@ jobs:
           distribution: 'adopt'  # Adjust as needed (e.g., 'adoptium')
       - name: Install Android tools
         run: sudo apt-get update && sudo apt-get install -y android-sdk-build-tools
-
       
-      - name: Check gradlew permissions (and skip if needed)
-        run: ls -l ./android/gradlew  # Adjust path if needed
-        if: ${{ ! steps.check_permissions.outputs.permission_ok }}  # Skip if permission_ok is not set
-
-      - name: Fix gradlew permissions (if needed)
-        run: chmod +x ./android/gradlew  # Adjust path if needed
-        if: ${{ steps.check_permissions.outputs.permission_failed }}  # Only run if permission_ok is not set
-
+      - name: Check Gradle wrapper permissions
+        run: ls -l ./android/gradlew
+        id: check_permissions
+      
+      - name: Fix Gradle wrapper permissions
+        run: chmod +x ./android/gradlew
+        if: ${{ steps.check_permissions.outputs.permission_failed }}
+      
       - name: Check android directory permissions
         run: ls -ld ./android
         
       - name: Build Android app (Android Studio Gradle command)
         run: |
-         pwd
-         ./gradlew assembleDebug # Adjust command for release build if needed
+          pwd
+          ./gradlew assembleDebug # Adjust command for release build if needed
         working-directory: ./android 
 
       - name: Upload APK artifact
@@ -54,4 +54,3 @@ jobs:
         with:
           name: android-${{ github.sha }}-debug.apk # Include commit SHA for unique filenames
           path: android/app/build/outputs/apk/debug/app-debug.apk # Adjust path for release build
-
