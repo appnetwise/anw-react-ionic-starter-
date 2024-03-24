@@ -43,6 +43,9 @@ jobs:
       - name: Check android directory permissions
         run: ls -ld ./android
         
+      - name: Ensure Gradle wrapper has executable permissions
+        run: chmod +x ./android/gradlew
+        
       - name: Build Android app (Android Studio Gradle command)
         run: |
           pwd
