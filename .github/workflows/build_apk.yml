@@ -46,7 +46,7 @@ jobs:
       - name: Build Android app (Android Studio Gradle command)
         run: |
          pwd
-         ./android/gradlew assembleDebug # Adjust command for release build if needed
+         ./gradlew assembleDebug # Adjust command for release build if needed
         working-directory: ./android 
 
       - name: Upload APK artifact
