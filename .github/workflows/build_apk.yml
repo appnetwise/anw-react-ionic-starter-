@@ -30,8 +30,10 @@ jobs:
           distribution: 'adopt'  # Adjust as needed (e.g., 'adoptium')
       - name: Install Android tools
         run: sudo apt-get update && sudo apt-get install -y android-sdk-build-tools
+        
       - name: Build Android app (Android Studio Gradle command)
         run: ./gradlew assembleDebug # Adjust command for release build if needed
+        working-directory: ./android 
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v3
