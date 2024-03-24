@@ -30,7 +30,17 @@ jobs:
           distribution: 'adopt'  # Adjust as needed (e.g., 'adoptium')
       - name: Install Android tools
         run: sudo apt-get update && sudo apt-get install -y android-sdk-build-tools
-        
+
+      
+      - name: Check gradlew permissions (and skip if needed)
+        run: ls -l ./android/gradlew  # Adjust path if needed
+        if: ${{ ! steps.check_permissions.outputs.permission_ok }}  # Skip if permission_ok is not set
+
+      - name: Fix gradlew permissions (if needed)
+        run: chmod +x ./android/gradlew  # Adjust path if needed
+        if: ${{ steps.check_permissions.outputs.permission_failed }}  # Only run if permission_ok is not set
+
+    
       - name: Build Android app (Android Studio Gradle command)
         run: ./gradlew assembleDebug # Adjust command for release build if needed
         working-directory: ./android 
