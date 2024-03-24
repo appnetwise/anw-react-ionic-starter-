@@ -1,0 +1,38 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [master] # Trigger on pushes to the master branch (adjust as needed)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Replace with a compatible runner if needed
+    steps:
+      - uses: actions/checkout@v3 # Checkout code from repository
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm install
+      - name: Build Ionic app
+        run: ionic build
+      - name: Add Android platform (if not already added)
+        run: npx cap add android || true # Add Android platform silently (ignore errors if already added)
+      - name: Copy web assets
+        run: npx cap copy android
+      - name: Install Android SDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11 # Adjust as needed based on your project requirements
+      - name: Install Android tools
+        run: sudo apt-get update && sudo apt-get install -y android-tools
+      - name: Build Android app (Android Studio Gradle command)
+        run: ./gradlew assembleDebug # Adjust command for release build if needed
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-${{ github.sha }}-debug.apk # Include commit SHA for unique filenames
+          path: android/app/build/outputs/apk/debug/app-debug.apk # Adjust path for release build
+
