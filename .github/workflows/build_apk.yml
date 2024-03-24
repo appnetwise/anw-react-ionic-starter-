@@ -1,5 +1,4 @@
 name: Build Android APK
-
 on:
   push:
     branches: [master] # Trigger on pushes to the master branch (adjust as needed)
