@@ -40,9 +40,13 @@ jobs:
         run: chmod +x ./android/gradlew  # Adjust path if needed
         if: ${{ steps.check_permissions.outputs.permission_failed }}  # Only run if permission_ok is not set
 
-    
+      - name: Check android directory permissions
+        run: ls -ld ./android
+        
       - name: Build Android app (Android Studio Gradle command)
-        run: ./gradlew assembleDebug # Adjust command for release build if needed
+        run: |
+         pwd
+         ./android/gradlew assembleDebug # Adjust command for release build if needed
         working-directory: ./android 
 
       - name: Upload APK artifact
